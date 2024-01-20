@@ -1,0 +1,114 @@
+import java.util.Scanner;
+
+public class TicTacToe {
+    private static char[][] board = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
+    private static char currentPlayer = 'X';
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Welcome to Tic Tac Toe!");
+
+        while (true) {
+            printBoard();
+            playMove(scanner);
+            if (checkWin() || checkDraw()) {
+                printBoard();
+                break;
+            }
+            switchPlayer();
+        }
+
+        scanner.close();
+    }
+
+    // Display the current state of the Tic Tac Toe board
+    private static void printBoard() {
+        System.out.println("-------------");
+        for (int i = 0; i < 3; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j] + " | ");
+            }
+            System.out.println();
+            System.out.println("-------------");
+        }
+    }
+
+    // Allow players to make a move on the board
+    private static void playMove(Scanner scanner) {
+        int row, col;
+
+        while (true) {
+            try {
+                System.out.println("Player " + currentPlayer + ", enter your move (row and column, e.g., 1 2): ");
+                row = scanner.nextInt() - 1;
+                col = scanner.nextInt() - 1;
+
+                if (isValidMove(row, col)) {
+                    board[row][col] = currentPlayer;
+                    break;
+                } else {
+                    System.out.println("Invalid move. Try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter two integers.");
+                scanner.nextLine(); // consume the invalid input
+            }
+        }
+    }
+
+    // Check if the move is valid
+    private static boolean isValidMove(int row, int col) {
+        return row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ';
+    }
+
+    // Switch between 'X' and 'O' players
+    private static void switchPlayer() {
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+
+    // Check if a player has won
+    private static boolean checkWin() {
+        for (int i = 0; i < 3; i++) {
+            if (checkRow(i) || checkColumn(i)) {
+                System.out.println("Player " + currentPlayer + " wins!");
+                return true;
+            }
+        }
+
+        if (checkDiagonals()) {
+            System.out.println("Player " + currentPlayer + " wins!");
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean checkRow(int row) {
+        return board[row][0] != ' ' && board[row][0] == board[row][1] && board[row][1] == board[row][2];
+    }
+
+    private static boolean checkColumn(int col) {
+        return board[0][col] != ' ' && board[0][col] == board[1][col] && board[1][col] == board[2][col];
+    }
+
+    private static boolean checkDiagonals() {
+        return (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) ||
+                (board[0][2] != ' ' && board[0][2] == board[1][1] && board[1][1] == board[2][0]);
+    }
+
+    // Check if the game is a draw
+    private static boolean checkDraw() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+
+        System.out.println("It's a draw!");
+        return true;
+    }
+}
